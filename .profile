@@ -1,6 +1,5 @@
 alias c="clear"
 alias ls='ls --color=auto'
-alias k='kubectl'
 alias cat='bat'
 
 export SHELL="zsh"
