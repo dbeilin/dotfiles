@@ -62,7 +62,7 @@ startup_mode = "Windowed"
 
 [window.dimensions]
 columns = 160
-lines = 80
+lines = 50
 
 [window.padding]
 x = 4
