@@ -77,6 +77,5 @@ zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 
 # Shell integrations
 [[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path zsh)"
-eval "$(ssh-agent -s)"
 eval "$(fzf --zsh)"
 eval "$(zoxide init --cmd cd zsh)"
