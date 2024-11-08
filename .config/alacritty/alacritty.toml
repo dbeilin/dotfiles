@@ -21,20 +21,21 @@ shape = "Block"
 [font]
 size = 15
 
+[font.normal]
+family = "MesloLGS Nerd Font"
+style = "Regular"
+
 [font.bold]
-family = "MesloLGS NF"
+family = "MesloLGS Nerd Font"
 style = "Bold"
+
+[font.italic]
+family = "MesloLGS Nerd Font"
 
 [font.glyph_offset]
 x = 0
 y = 0
 
-[font.italic]
-family = "MesloLGS NF"
-
-[font.normal]
-family = "MesloLGS NF"
-style = "Regular"
 
 [font.offset]
 x = 0
@@ -66,3 +67,13 @@ lines = 80
 [window.padding]
 x = 4
 y = 4
+
+[[keyboard.bindings]]
+key = "Left"
+mods = "Command"
+chars = "\u001bb"  # Alt + b - back one word
+
+[[keyboard.bindings]]
+key = "Right"
+mods = "Command"
+chars = "\u001bf"  # Alt + f - forward one word

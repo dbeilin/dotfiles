@@ -27,7 +27,6 @@ brew 'zoxide'
 # Apps
 cask 'alacritty'
 cask 'discord'
-cask 'docker'
 cask 'firefox'
 cask 'google-cloud-sdk'
 cask 'obsidian'
