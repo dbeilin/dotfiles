@@ -1,7 +1,3 @@
-alias c="clear"
-alias ls='ls --color=auto'
-alias cat='bat'
-
 export SHELL="zsh"
 export GOPATH="$HOME/.go"
 export PATH="$GOPATH/bin:$PATH"

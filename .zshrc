@@ -34,15 +34,15 @@ zinit light zsh-users/zsh-autosuggestions
 zinit light Aloxaf/fzf-tab
 
 # Add in snippets
-zinit snippet OMZP::git
 zinit snippet OMZP::aws
-zinit snippet OMZP::kubectl
-zinit snippet OMZP::kubectx
-zinit snippet OMZP::docker-compose
-zinit snippet OMZP::docker
-zinit snippet OMZP::gcloud
 zinit snippet OMZP::direnv
 zinit snippet OMZP::dirhistory
+zinit snippet OMZP::docker
+zinit snippet OMZP::docker-compose
+zinit snippet OMZP::gcloud
+zinit snippet OMZP::git
+zinit snippet OMZP::kubectl
+zinit snippet OMZP::kubectx
 zinit snippet OMZP::terraform
 
 # Load completions
@@ -52,6 +52,11 @@ zinit cdreplay -q
 
 # Load prompt
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# Load aliases
+if [ -f ~/.zsh_aliases ]; then
+    source ~/.zsh_aliases
+fi
 
 # History
 HISTSIZE=5000
