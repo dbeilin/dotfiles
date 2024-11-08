@@ -38,8 +38,10 @@ zinit snippet OMZP::docker
 zinit snippet OMZP::docker-compose
 zinit snippet OMZP::gcloud
 zinit snippet OMZP::git
+zinit snippet OMZP::kind
 zinit snippet OMZP::kubectl
 zinit snippet OMZP::kubectx
+zinit snippet OMZP::pyenv
 zinit snippet OMZP::terraform
 
 # Load completions
@@ -77,5 +79,6 @@ zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 
 # Shell integrations
 [[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path zsh)"
+eval "$(pyenv init --path)"
 eval "$(fzf --zsh)"
 eval "$(zoxide init --cmd cd zsh)"

@@ -21,6 +21,7 @@ brew 'pyenv'
 brew 'stow'
 brew 'terraform'
 brew 'tree'
+brew 'uv'
 brew 'yq'
 brew 'zoxide'
 
