@@ -22,6 +22,7 @@ brew 'stow'
 brew 'terraform'
 brew 'tree'
 brew 'uv'
+brew 'viddy'
 brew 'yq'
 brew 'zoxide'
 
