@@ -35,6 +35,7 @@ cask 'raycast'
 cask 'shottr'
 cask 'slack'
 cask 'spotify'
+cask 'sublime-text'
 cask 'visual-studio-code'
 
 # Fonts
