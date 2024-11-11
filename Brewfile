@@ -25,6 +25,7 @@ brew 'tree'
 brew 'uv'
 brew 'viddy'
 brew 'yq'
+brew 'zellij'
 brew 'zoxide'
 
 # Apps

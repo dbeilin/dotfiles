@@ -2,3 +2,4 @@ alias c="clear"
 alias ls='ls --color=auto'
 alias cat='bat'
 alias watch='viddy'
+alias z='zellij'
