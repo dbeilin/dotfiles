@@ -1,8 +1,8 @@
 // If you'd like to override the default keybindings completely, be sure to change "keybinds" to "keybinds clear-defaults=true"
 keybinds {
     normal {
-        bind "Ctrl d" { NewPane "Right"; }
-        bind "Ctrl Shift d" { NewPane "Down"; }
+        bind "Ctrl n" { NewPane "Right"; }
+        bind "Ctrl Shift n" { NewPane "Down"; }
         bind "Ctrl w" { CloseFocus; }
     }
     locked {
@@ -159,7 +159,7 @@ keybinds {
     shared_except "locked" {
         bind "Ctrl g" { SwitchToMode "Locked"; }
         bind "Ctrl q" { Quit; }
-        bind "Alt f" { ToggleFloatingPanes; }
+        bind "Alt Shift f" { ToggleFloatingPanes; }
         bind "Alt n" { NewPane; }
         bind "Alt i" { MoveTab "Left"; }
         bind "Alt o" { MoveTab "Right"; }

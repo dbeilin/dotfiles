@@ -72,9 +72,9 @@ y = 4
 [[keyboard.bindings]]
 key = "Left"
 mods = "Command"
-chars = "\u001bb"  # Alt + b - back one word
+chars = "\u001bb"  # Alt+b - back one word
 
 [[keyboard.bindings]]
 key = "Right"
 mods = "Command"
-chars = "\u001bf"  # Alt + f - forward one word
+chars = "\u001bf"  # Alt+f - forward one word
