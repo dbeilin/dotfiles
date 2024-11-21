@@ -5,8 +5,12 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-if [[ -f "/opt/homebrew/bin/brew" ]] then
-  eval "$(/opt/homebrew/bin/brew shellenv)"
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    # Linux
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+    # macOS
+    eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
 # Set the directory we want to store zinit and plugins
@@ -78,6 +82,5 @@ zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 
 # Shell integrations
 [[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path zsh)"
-eval "$(pyenv init --path)"
 eval "$(fzf --zsh)"
 eval "$(zoxide init --cmd cd zsh)"
