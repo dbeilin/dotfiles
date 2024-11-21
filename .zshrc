@@ -41,7 +41,6 @@ zinit snippet OMZP::git
 zinit snippet OMZP::kind
 zinit snippet OMZP::kubectl
 zinit snippet OMZP::kubectx
-zinit snippet OMZP::pyenv
 zinit snippet OMZP::terraform
 
 # Load completions
