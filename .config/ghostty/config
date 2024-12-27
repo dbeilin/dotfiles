@@ -1,0 +1,8 @@
+theme = catppuccin-macchiato
+font-family = "MesloLGS Nerd Font"
+font-style = regular
+font-size = 18
+
+copy-on-select = true
+shell-integration = detect
+window-save-state = always
