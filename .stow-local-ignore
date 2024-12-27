@@ -28,3 +28,5 @@ _darcs
 
 ^raycast
 ^fresh.sh
+^install.sh
+^Brewfile
