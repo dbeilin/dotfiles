@@ -37,7 +37,6 @@ zinit light Aloxaf/fzf-tab
 # Add in snippets
 zinit snippet OMZP::aws
 zinit snippet OMZP::direnv
-zinit snippet OMZP::dirhistory
 zinit snippet OMZP::docker
 zinit snippet OMZP::docker-compose
 zinit snippet OMZP::gcloud
