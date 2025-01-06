@@ -3,3 +3,5 @@ alias ls='ls --color=auto'
 alias cat='bat'
 alias watch='viddy'
 alias z='zellij'
+alias loadenv="export \$(grep -v '^#' .env | xargs)"
+
