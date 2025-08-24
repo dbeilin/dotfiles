@@ -7,3 +7,4 @@ copy-on-select = clipboard
 shell-integration = detect
 window-save-state = always
 clipboard-paste-protection = false
+
