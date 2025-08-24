@@ -2,3 +2,5 @@ alias c="clear"
 alias ls='ls --color=auto'
 alias cat='bat'
 alias loadenv="export \$(grep -v '^#' .env | xargs)"
+alias gcm="git checkout main"
+alias gl="git pull"
