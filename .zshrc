@@ -9,6 +9,8 @@ export SAVEHIST=10000
 setopt HIST_IGNORE_ALL_DUPS HIST_IGNORE_SPACE SHARE_HISTORY INC_APPEND_HISTORY
 setopt AUTO_CD AUTO_PUSHD PUSHD_IGNORE_DUPS
 setopt INTERACTIVE_COMMENTS NO_BEEP
+setopt appendhistory sharehistory hist_ignore_space hist_ignore_all_dups
+setopt hist_save_no_dups hist_ignore_dups hist_find_no_dups
 bindkey -e
 
 # ---------- Homebrew (macOS / Linux) ----------
@@ -29,6 +31,11 @@ zmodload zsh/complist
 setopt COMPLETE_IN_WORD AUTO_MENU
 zstyle ':completion:*' menu select
 zstyle ':completion:*' rehash true
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+zstyle ':completion:*' menu no
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
+zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 
 # ---------- Antidote (Lazy Loading) ----------
 # Lazy-load antidote and generate the static load file only when needed
@@ -54,7 +61,10 @@ source ${zsh_plugins}.zsh
 # ---------- Aliases / PATH ----------
 [[ -f ~/.zsh_aliases ]] && source ~/.zsh_aliases
 
-# Faster redraw on high-latency terminals
+# ---------- Shell Integrations ----------
+eval "$(fzf --zsh)"
+eval "$(zoxide init --cmd cd zsh)"
+[[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path zsh)"
+
 export PROMPT_EOL_MARK=""
-# Make less behave well with colors
 export LESS='-R'
