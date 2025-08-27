@@ -18,3 +18,7 @@ alias kgp="kubectl get pods"
 alias kcc="kubectl config current-context"
 alias kctx="kubectx"
 alias kns="kubens"
+
+# Terraform
+alias tf="terraform"
+
