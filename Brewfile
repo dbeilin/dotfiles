@@ -1,6 +1,7 @@
 # CLI
 brew 'argo'
 brew 'argocd'
+brew 'atuin'
 brew 'awscli'
 brew 'bat'
 brew 'direnv'
