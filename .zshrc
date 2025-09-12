@@ -66,7 +66,7 @@ source ${zsh_plugins}.zsh
 [[ -f ~/.zsh_aliases ]] && source ~/.zsh_aliases
 
 # ---------- Shell Integrations ----------
-eval "$(atuin init zsh)"
+eval "$(atuin init zsh --disable-up-arrow)"
 eval "$(zoxide init --cmd cd zsh)"
 [[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path zsh)"
 
