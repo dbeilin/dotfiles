@@ -21,7 +21,7 @@ bindkey -e
 if [[ -d /opt/homebrew ]]; then
   eval "$(/opt/homebrew/bin/brew shellenv)"
 elif command -v brew >/dev/null 2>&1; then
-  eval "$(brew shellenv)"
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
 # ---------- Completions ----------
