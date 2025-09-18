@@ -46,6 +46,9 @@
   local cyan='6'
   local white='7'
 
+  typeset -g POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND='kubectl|k|helm|kubectx|kubens'
+  typeset -g POWERLEVEL9K_KUBECONTEXT_FOREGROUND=$grey
+
   # Left prompt segments.
   typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
     context                   # user@host
@@ -58,6 +61,7 @@
 
   # Right prompt segments.
   typeset -g POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(
+    kubecontext             # kubernetes context (shows only when typing k/kubectl)
     # command_execution_time  # previous command duration
     # virtualenv              # python virtual environment
     # context                 # user@host
