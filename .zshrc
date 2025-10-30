@@ -24,6 +24,10 @@ elif command -v brew >/dev/null 2>&1; then
   eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
+# ---------- Custom Functions ----------
+fpath=(~/.zsh/functions $fpath)
+autoload -Uz awsctx
+
 # ---------- Completions ----------
 autoload -Uz compinit
 ZCOMPDUMP=${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump-${ZSH_VERSION}
