@@ -77,3 +77,4 @@ source ${zsh_plugins}.zsh
 # ---------- Shell Integrations ----------
 eval "$(atuin init zsh --disable-up-arrow)"
 eval "$(zoxide init --cmd cd zsh)"
+[[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path zsh)"
