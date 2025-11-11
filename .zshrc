@@ -15,7 +15,6 @@ setopt AUTO_CD AUTO_PUSHD PUSHD_IGNORE_DUPS
 setopt INTERACTIVE_COMMENTS NO_BEEP
 setopt appendhistory sharehistory hist_ignore_space hist_ignore_all_dups
 setopt hist_save_no_dups hist_ignore_dups hist_find_no_dups
-bindkey -e
 
 # ---------- Homebrew (macOS / Linux) ----------
 if [[ -d /opt/homebrew ]]; then
@@ -78,7 +77,3 @@ source ${zsh_plugins}.zsh
 # ---------- Shell Integrations ----------
 eval "$(atuin init zsh --disable-up-arrow)"
 eval "$(zoxide init --cmd cd zsh)"
-[[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path zsh)"
-
-export PROMPT_EOL_MARK=""
-export LESS='-R'
