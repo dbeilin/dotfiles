@@ -1,4 +1,4 @@
 sync_address = "https://atuin.beinish.dev"
 sync_frequency = "10m"
-store_failed = false
+store_failed = true
 inline_height = 20
