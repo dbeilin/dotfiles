@@ -1,0 +1,60 @@
+# Switch AWS profiles with tab completion and interactive menu
+# Usage: awsctx [profile-name]
+#   awsctx              - interactive menu (fzf)
+#   awsctx -l           - list all profiles
+#   awsctx <profile>    - switch to profile
+
+local current_profile="${AWS_PROFILE:-default}"
+
+# Handle list flag
+if [[ "$1" == "-l" ]] || [[ "$1" == "--list" ]]; then
+  echo "Available AWS profiles:"
+  local profile
+  while IFS= read -r profile; do
+    if [[ "${profile}" == "${current_profile}" ]]; then
+      echo "* ${profile} (current)"
+    else
+      echo "  ${profile}"
+    fi
+  done < <(aws configure list-profiles)
+  return 0
+fi
+
+# If argument provided, switch directly
+if [[ -n "$1" ]]; then
+  export AWS_PROFILE="$1"
+  echo "Switched to AWS profile: $1"
+  if ! aws sts get-caller-identity 2>/dev/null; then
+    echo "Profile set, but couldn't verify credentials (might need SSO login)"
+  fi
+  return 0
+fi
+
+# Interactive mode with fzf
+if ! command -v fzf >/dev/null 2>&1; then
+  echo "fzf not found. Listing profiles:" >&2
+  awsctx -l
+  echo ""
+  echo "Install fzf for interactive menu, or use: awsctx <profile-name>"
+  return 1
+fi
+
+local profiles
+profiles="$(aws configure list-profiles)"
+
+local selected
+selected="$(echo "${profiles}" | \
+  fzf --height=40% \
+      --reverse \
+      --prompt="AWS Profile > " \
+      --header="Current: ${current_profile}" \
+      --preview='echo "Profile: {}"; aws configure get region --profile {} 2>/dev/null | sed "s/^/Region: /"' \
+      --preview-window=up:3:wrap)"
+
+if [[ -n "${selected}" ]]; then
+  export AWS_PROFILE="${selected}"
+  echo "Switched to AWS profile: ${selected}"
+  if ! aws sts get-caller-identity 2>/dev/null; then
+    echo "Profile set, but couldn't verify credentials (might need SSO login)"
+  fi
+fi

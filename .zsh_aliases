@@ -1,0 +1,25 @@
+# Misc
+alias c="clear"
+alias ls='ls --color=auto'
+alias cat='bat'
+alias loadenv="export \$(grep -v '^#' .env | xargs)"
+
+# Git
+alias gcm="git checkout main"
+alias gl="git pull"
+alias gcb="git checkout -b"
+alias gbd="git branch -d"
+alias gbD="git branch -D"
+alias gco="git checkout"
+alias gitpersonal="GIT_SSH_COMMAND='ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes -o IdentityAgent=none' git"
+
+# Kubernetes
+alias k="kubectl"
+alias kgp="kubectl get pods"
+alias kcc="kubectl config current-context"
+alias kctx="kubectx"
+alias kns="kubens"
+
+# Terraform
+alias tf="terraform"
+

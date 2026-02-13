@@ -1,0 +1,11 @@
+term = xterm-256color
+
+theme = Catppuccin Macchiato
+font-family = "MesloLGS Nerd Font"
+font-style = regular
+font-size = 16
+
+copy-on-select = clipboard
+shell-integration = detect
+window-save-state = always
+clipboard-paste-protection = false

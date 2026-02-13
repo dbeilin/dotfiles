@@ -1,0 +1,9 @@
+{
+    "\UF729"  = "moveToBeginningOfLine:"; /* Home */
+    "\UF72B"  = "moveToEndOfLine:"; /* End */
+    "@\UF702" = "moveWordBackward:";    /* Command + Left */
+    "@\UF703" = "moveWordForward:";     /* Command + Right */
+    "@\U007F"  = "deleteWordBackward:"; /* Cmd  + Backspace */
+    "@$\UF702" = "moveWordBackwardAndModifySelection:"; /* Shift + Cmd  + Leftarrow */
+    "@$\UF703" = "moveWordForwardAndModifySelection:"; /* Shift + Cmd  + Rightarrow */
+}
