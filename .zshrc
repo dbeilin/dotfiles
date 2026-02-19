@@ -75,11 +75,8 @@ source ${zsh_plugins}.zsh
 # ---------- Shell Integrations ----------
 eval "$(atuin init zsh --disable-up-arrow)"
 eval "$(zoxide init --cmd cd zsh)"
+eval "$(fnm env --use-on-cd --shell zsh)"
+
 [[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path zsh)"
 export PROMPT_EOL_MARK=""
 export LESS='-R'
-
-
-export NVM_DIR="$HOME/.config/nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
