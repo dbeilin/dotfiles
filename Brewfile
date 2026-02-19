@@ -1,10 +1,12 @@
+# Taps
+tap 'hashicorp/tap'
+
 # CLI
 brew 'argo'
 brew 'argocd'
 brew 'atuin'
 brew 'awscli'
 brew 'bat'
-brew 'carapace'
 brew 'direnv'
 brew 'docker'
 brew 'fzf'
@@ -20,7 +22,7 @@ brew 'kind'
 brew 'kubectx'
 brew 'kubernetes-cli'
 brew 'stow'
-brew 'terraform'
+brew 'hashicorp/tap/terraform'
 brew 'tree'
 brew 'uv'
 brew 'yq'
