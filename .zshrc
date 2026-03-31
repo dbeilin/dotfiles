@@ -19,7 +19,7 @@ setopt hist_save_no_dups hist_ignore_dups hist_find_no_dups
 # ---------- Homebrew (macOS / Linux) ----------
 if [[ -d /opt/homebrew ]]; then
   eval "$(/opt/homebrew/bin/brew shellenv)"
-elif command -v brew >/dev/null 2>&1; then
+elif [[ -d /home/linuxbrew/.linuxbrew ]]; then
   eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
