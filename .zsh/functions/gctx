@@ -1,0 +1,63 @@
+# Switch Google Cloud projects with tab completion and interactive menu
+# Usage: gctx [project-id]
+#   gctx              - interactive menu (fzf)
+#   gctx -l           - list all projects
+#   gctx <project-id> - switch to project
+
+if ! command -v gcloud >/dev/null 2>&1; then
+  echo "gcloud not found. Install the Google Cloud SDK first." >&2
+  return 1
+fi
+
+local current_project
+current_project="$(gcloud config get-value project 2>/dev/null)"
+
+# Handle list flag
+if [[ "$1" == "-l" ]] || [[ "$1" == "--list" ]]; then
+  echo "Available Google Cloud projects:"
+  local project
+  while IFS= read -r project; do
+    if [[ "${project}" == "${current_project}" ]]; then
+      echo "* ${project} (current)"
+    else
+      echo "  ${project}"
+    fi
+  done < <(gcloud projects list --format="value(projectId)")
+  return 0
+fi
+
+# If argument provided, switch directly
+if [[ -n "$1" ]]; then
+  gcloud config set project "$1"
+  return $?
+fi
+
+# Interactive mode with fzf
+if ! command -v fzf >/dev/null 2>&1; then
+  echo "fzf not found. Listing projects:" >&2
+  gctx -l
+  echo ""
+  echo "Install fzf for interactive menu, or use: gctx <project-id>"
+  return 1
+fi
+
+local projects
+projects="$(gcloud projects list --format="value(projectId)")"
+
+if [[ -z "${projects}" ]]; then
+  echo "No Google Cloud projects found for the current account." >&2
+  return 1
+fi
+
+local selected
+selected="$(echo "${projects}" | \
+  fzf --height=40% \
+      --reverse \
+      --prompt="GCP Project > " \
+      --header="Current: ${current_project:-none}" \
+      --preview='gcloud projects describe {} --format="yaml(projectId,name,projectNumber,lifecycleState)" 2>/dev/null' \
+      --preview-window=up:6:wrap)"
+
+if [[ -n "${selected}" ]]; then
+  gcloud config set project "${selected}"
+fi

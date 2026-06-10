@@ -25,7 +25,7 @@ fi
 
 # ---------- Custom Functions ----------
 fpath=(~/.zsh/functions $fpath)
-autoload -Uz awsctx
+autoload -Uz awsctx gctx
 
 # ---------- Completions ----------
 autoload -Uz compinit

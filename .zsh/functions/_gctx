@@ -1,0 +1,8 @@
+#compdef gctx
+
+local -a projects
+projects=(${(f)"$(gcloud projects list --format='value(projectId)' 2>/dev/null)"})
+
+_arguments \
+  '(-l --list)'{-l,--list}'[list available Google Cloud projects]' \
+  '1:google cloud project:_describe "google cloud project" projects'
