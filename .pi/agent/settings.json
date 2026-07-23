@@ -1,0 +1,13 @@
+{
+  "theme": "github-dark",
+  "defaultProvider": "openai-codex",
+  "defaultModel": "gpt-5.6-sol",
+  "defaultThinkingLevel": "low",
+  "hideThinkingBlock": false,
+  "packages": [
+    "npm:@tintinweb/pi-subagents",
+    "npm:pi-web-access",
+    "npm:@a5c-ai/babysitter-pi",
+    "npm:@narumitw/pi-lsp"
+  ]
+}

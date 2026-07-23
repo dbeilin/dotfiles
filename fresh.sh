@@ -22,7 +22,11 @@ echo "Installing Homebrew packages..."
 brew tap homebrew/bundle
 brew bundle --file ./Brewfile
 
-echo "Setup complete! Please restart your terminal or run 'source ~/.zshrc'"
+# Install Pi. Its tracked configuration is linked into ~/.pi by `stow .`.
+echo "Installing Pi..."
+npm install -g --ignore-scripts @earendil-works/pi-coding-agent
+
+echo "Setup complete! Run 'stow .' and then restart your terminal or run 'source ~/.zshrc'"
 
 # Set macOS preferences - we will run this last because this will reload the shell
 echo "Applying macOS preferences..."

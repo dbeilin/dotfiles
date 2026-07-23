@@ -1,0 +1,22 @@
+# Pi runtime and private state
+auth.json
+trust.json
+models-store.json
+sessions/
+workflows/
+npm/
+git/
+bin/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Logs and temporary files
+*.log
+*.tmp
+*.swp
+.DS_Store
