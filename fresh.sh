@@ -22,7 +22,7 @@ echo "Installing Homebrew packages..."
 brew tap homebrew/bundle
 brew bundle --file ./Brewfile
 
-# Install Pi. Its tracked configuration is linked into ~/.pi by `stow .`.
+# Install Pi.
 echo "Installing Pi..."
 npm install -g --ignore-scripts @earendil-works/pi-coding-agent
 

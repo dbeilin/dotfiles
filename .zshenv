@@ -7,3 +7,6 @@ export PATH="$PATH:/usr/local/sbin"
 export XDG_CONFIG_HOME="$HOME/.config"
 export KUBECONFIG="$HOME/.kube/config"
 export PATH="$HOME/dev/flutter/bin:$PATH"
+
+# Machine-local overrides/secrets, not tracked in git.
+[ -f "$HOME/.zshenv.local" ] && source "$HOME/.zshenv.local"

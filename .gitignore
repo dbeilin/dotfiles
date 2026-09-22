@@ -28,6 +28,7 @@ Thumbs.db
 .env
 
 # Shell
+.zshenv.local
 .antidote/
 .zsh_plugins.zsh
 .zsh_plugins.zsh.zwc

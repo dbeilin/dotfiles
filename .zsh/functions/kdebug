@@ -1,0 +1,18 @@
+# Start an ephemeral BusyBox debug container in a pod
+# Usage: kdebug <namespace> <pod> [container]
+
+if (( $# < 2 || $# > 3 )); then
+  echo "Usage: kdebug <namespace> <pod> [container]" >&2
+  return 2
+fi
+
+local -a target_args
+if [[ -n "$3" ]]; then
+  target_args=(--target="$3")
+fi
+
+kubectl debug -n "$1" "pod/$2" \
+  "${target_args[@]}" \
+  --image=busybox:1.36 \
+  --profile=general \
+  -it -- sh
