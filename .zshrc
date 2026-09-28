@@ -76,6 +76,7 @@ source ${zsh_plugins}.zsh
 eval "$(atuin init zsh --disable-up-arrow)"
 eval "$(zoxide init --cmd cd zsh)"
 eval "$(fnm env --use-on-cd --shell zsh)"
+command -v whatisit >/dev/null && eval "$(whatisit shell-init)"
 
 [[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path zsh)"
 export PROMPT_EOL_MARK=""
