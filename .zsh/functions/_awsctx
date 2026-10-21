@@ -1,15 +1,18 @@
 #compdef awsctx
+#
+# Completion for awsctx: profile names, described by account, role and region.
 
 autoload -Uz _awsctx_profiles
 
-local -a rows profiles fields
 local row
-rows=("${(@f)$(_awsctx_profiles)}")
-for row in ${rows:#}; do
+local -a fields profiles
+for row in "${(@f)$(_awsctx_profiles)}"; do
+  [[ -z "${row}" ]] && continue
   fields=("${(@ps:\t:)row}")
-  profiles+=("${fields[1]//:/\\:}:${fields[2]:--}  ${fields[3]:--}  ${fields[4]:--}")
+  # _describe entries are "value:description"; escape colons in the name
+  profiles+=("${fields[1]//:/\\:}:${fields[2]}  ${fields[3]}  ${fields[4]}")
 done
 
 _arguments \
-  '(-l --list)'{-l,--list}'[list AWS profiles with account, role and region]' \
+  '(-l --list)'{-l,--list}'[list profiles with account, role and region]' \
   '1:aws profile:{_describe "aws profile" profiles}'

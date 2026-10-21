@@ -1,112 +1,180 @@
-# Switch AWS profiles with tab completion, an interactive menu, and SSO auto-login
-# Usage: awsctx [profile-name]
-#   awsctx              - interactive menu (fzf)
-#   awsctx -l           - list all profiles (account / role / region)
-#   awsctx <profile>    - switch to profile; runs `aws sso login` if its SSO token is missing/expired
+#
+# Switch AWS profiles, logging in to SSO automatically when needed.
+#
+# Usage:
+#   awsctx              pick a profile with fzf
+#   awsctx -l|--list    list profiles with account, role and region
+#   awsctx <profile>    switch to <profile>
+#
+# Switching exports AWS_PROFILE. If the profile uses SSO and its token is
+# missing or expired, `aws sso login` runs before the switch is confirmed.
+#
+# Autoloaded from ~/.zsh/functions. The helpers below are defined on first
+# call, then the last line runs awsctx itself.
 
-emulate -L zsh
-setopt extended_glob
-autoload -Uz _awsctx_profiles
+#######################################
+# Print an error message to STDERR.
+# Arguments:
+#   Message words.
+#######################################
+_awsctx_err() {
+  echo "awsctx: $*" >&2
+}
 
-local tab=$'\t'
+#######################################
+# Align profile rows into "name  account  role  region" columns.
+# Arguments:
+#   Profile rows, as printed by _awsctx_profiles.
+# Outputs:
+#   One aligned line per row to STDOUT, in the same order.
+#######################################
+_awsctx_table() {
+  local row
+  for row in "$@"; do
+    print -r -- "${row%$'\t'*}"    # drop the trailing sso field
+  done | column -t -s $'\t'
+}
 
-local current_profile="${AWS_PROFILE:-default}"
-local -a rows
-rows=("${(@f)$(_awsctx_profiles)}")
-rows=(${rows:#})
+#######################################
+# Print all profiles, marking the active one.
+# Globals:
+#   AWS_PROFILE
+# Arguments:
+#   Profile rows, as printed by _awsctx_profiles.
+# Outputs:
+#   The profile table to STDOUT.
+#######################################
+_awsctx_list() {
+  local line
+  local current="${AWS_PROFILE:-default}"
 
-if (( ${#rows} == 0 )); then
-  echo "No AWS profiles found in ${AWS_CONFIG_FILE:-$HOME/.aws/config}" >&2
-  return 1
-fi
-
-# Aligned "name  account  role  region" lines, one per profile, same order as rows
-local -a fields table
-local row name_w=0 role_w=0
-for row in "${rows[@]}"; do
-  fields=("${(@ps:\t:)row}")
-  (( ${#fields[1]} > name_w )) && name_w=${#fields[1]}
-  (( ${#fields[3]} > role_w )) && role_w=${#fields[3]}
-done
-for row in "${rows[@]}"; do
-  fields=("${(@ps:\t:)row}")
-  table+=("$(printf '%-*s  %-12s  %-*s  %s' ${name_w} "${fields[1]}" "${fields[2]:--}" ${role_w} "${fields[3]:--}" "${fields[4]:--}")")
-done
-
-# Handle list flag
-if [[ "$1" == "-l" ]] || [[ "$1" == "--list" ]]; then
   echo "Available AWS profiles:"
-  local i
-  for (( i = 1; i <= ${#rows}; i++ )); do
-    if [[ "${rows[i]%%${tab}*}" == "${current_profile}" ]]; then
-      echo "* ${table[i]}  (current)"
+  for line in "${(@f)$(_awsctx_table "$@")}"; do
+    if [[ "${line%% *}" == "${current}" ]]; then
+      echo "* ${line}  (current)"
     else
-      echo "  ${table[i]}"
+      echo "  ${line}"
     fi
   done
-  return 0
-fi
+}
 
-local target="$1"
-
-# Interactive mode with fzf
-if [[ -z "${target}" ]]; then
-  if ! command -v fzf >/dev/null 2>&1; then
-    echo "fzf not found. Listing profiles:" >&2
-    awsctx -l
-    echo ""
-    echo "Install fzf for interactive menu, or use: awsctx <profile-name>"
+#######################################
+# Let the user pick a profile with fzf.
+# Globals:
+#   AWS_PROFILE
+# Arguments:
+#   Profile rows, as printed by _awsctx_profiles.
+# Outputs:
+#   The chosen profile name to STDOUT; nothing if the user cancelled.
+# Returns:
+#   1 if fzf is not installed.
+#######################################
+_awsctx_pick() {
+  if (( ! ${+commands[fzf]} )); then
+    _awsctx_err "fzf not found; use 'awsctx <profile>' or 'awsctx -l'"
     return 1
   fi
 
-  local i selected
-  selected="$(for (( i = 1; i <= ${#rows}; i++ )); do
-      print -r -- "${rows[i]%%${tab}*}${tab}${table[i]}"
-    done | fzf --height=40% \
-      --reverse \
-      --delimiter="${tab}" \
-      --with-nth=2 \
-      --prompt="AWS Profile > " \
-      --header="Current: ${current_profile}")"
-  [[ -z "${selected}" ]] && return 0
-  target="${selected%%${tab}*}"
-fi
+  local line
+  line="$(_awsctx_table "$@" \
+    | fzf --height=40% --reverse \
+        --prompt='AWS Profile > ' \
+        --header="Current: ${AWS_PROFILE:-default}")"
+  [[ -n "${line}" ]] && print -r -- "${line%% *}"
+}
 
-# Switch
-local match_row="${rows[(r)${(b)target}${tab}*]}"
-if [[ -z "${match_row}" ]]; then
-  echo "Unknown AWS profile: ${target}" >&2
-  echo "Run 'awsctx -l' to see available profiles." >&2
-  return 1
-fi
-fields=("${(@ps:\t:)match_row}")
-local acct="${fields[2]}" role="${fields[3]}" region="${fields[4]}" sso="${fields[5]}"
+#######################################
+# Ask STS who the current credentials belong to.
+# Outputs:
+#   "<account> <TAB> <arn>" to STDOUT on success, the AWS CLI error otherwise.
+# Returns:
+#   Non-zero if the credentials could not be verified.
+#######################################
+_awsctx_whoami() {
+  aws sts get-caller-identity --query '[Account,Arn]' --output text 2>&1
+}
 
-export AWS_PROFILE="${target}"
+#######################################
+# Export AWS_PROFILE, logging in to SSO first if the token has expired.
+# Globals:
+#   AWS_PROFILE (exported)
+# Arguments:
+#   Profile row, as printed by _awsctx_profiles.
+# Outputs:
+#   Progress and the verified identity to STDOUT, errors to STDERR.
+# Returns:
+#   1 if login failed or the credentials could not be verified.
+#######################################
+_awsctx_switch() {
+  local -a fields=("${(@ps:\t:)1}")
+  local name="${fields[1]}" role="${fields[3]}"
+  local region="${fields[4]}" sso="${fields[5]}"
+  local identity
 
-local out
-out="$(aws sts get-caller-identity --query '[Account,Arn]' --output text 2>&1)"
-if (( $? != 0 )) && [[ -n "${sso}" && "${out:l}" == *(sso|token)* ]]; then
-  if [[ "${sso}" == "legacy" ]]; then
-    echo "SSO token for profile '${target}' is missing or expired, logging in..."
-  else
-    echo "SSO session '${sso}' is missing or expired, logging in..."
+  export AWS_PROFILE="${name}"
+
+  identity="$(_awsctx_whoami)"
+  if (( $? != 0 )) && [[ "${sso}" != '-' \
+      && "${identity:l}" == *(sso|token)* ]]; then
+    echo "SSO token for '${name}' is missing or expired, logging in..."
+    if ! aws sso login --profile "${name}"; then
+      _awsctx_err "SSO login failed for '${name}'"
+      return 1
+    fi
+    identity="$(_awsctx_whoami)"
   fi
-  if ! aws sso login --profile "${target}"; then
-    echo "Switched to AWS profile: ${target}, but SSO login failed" >&2
+
+  if [[ "${identity}" != [0-9]##$'\t'arn:* ]]; then
+    _awsctx_err "switched to '${name}', but couldn't verify credentials:"
+    print -r -- "${identity}" >&2
     return 1
   fi
-  out="$(aws sts get-caller-identity --query '[Account,Arn]' --output text 2>&1)"
-fi
 
-if [[ "${out}" == [0-9]##${tab}arn:* ]]; then
-  local arn="${out#*${tab}}"
-  acct="${out%%${tab}*}"
-  [[ -z "${role}" ]] && role="${${arn#*:*:*:*:*:}#*/}"
-  echo "Switched to AWS profile: ${target}"
-  echo "  account ${acct}  role ${role}  region ${region:--}"
-else
-  echo "Switched to AWS profile: ${target}, but couldn't verify credentials:" >&2
-  echo "${out}" >&2
-  return 1
-fi
+  local account="${identity%%$'\t'*}" arn="${identity#*$'\t'}"
+  # Profiles without sso_role_name/role_arn: take the role from the ARN,
+  # e.g. arn:aws:sts::123:assumed-role/MyRole/me -> MyRole/me
+  [[ "${role}" == '-' ]] && role="${arn#*:*:*:*:*:*/}"
+
+  echo "Switched to AWS profile: ${name}"
+  echo "  account ${account}  role ${role}  region ${region}"
+}
+
+awsctx() {
+  emulate -L zsh
+  setopt extended_glob
+  autoload -Uz _awsctx_profiles
+
+  local -a rows
+  rows=("${(@f)$(_awsctx_profiles)}")
+  rows=(${rows:#})    # drop the empty element left when there are no profiles
+  if (( ${#rows} == 0 )); then
+    _awsctx_err "no profiles in ${AWS_CONFIG_FILE:-${HOME}/.aws/config}"
+    return 1
+  fi
+
+  local name
+  case "$1" in
+    -l|--list)
+      _awsctx_list "${rows[@]}"
+      return
+      ;;
+    '')
+      name="$(_awsctx_pick "${rows[@]}")" || return
+      [[ -z "${name}" ]] && return 0
+      ;;
+    *) name="$1" ;;
+  esac
+
+  # The row whose first field is exactly ${name}. $'\t' isn't expanded
+  # inside a (r) subscript, hence the variable.
+  local tab=$'\t'
+  local row="${rows[(r)${(b)name}${tab}*]}"
+  if [[ -z "${row}" ]]; then
+    _awsctx_err "unknown profile '${name}' (see 'awsctx -l')"
+    return 1
+  fi
+
+  _awsctx_switch "${row}"
+}
+
+awsctx "$@"
