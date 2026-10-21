@@ -33,6 +33,12 @@ ZCOMPDUMP=${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump-${ZSH_VERSION}
 mkdir -p ${ZCOMPDUMP:h}
 compinit -d "$ZCOMPDUMP" -C
 
+# AWS CLI ships a bash-style completer (completes commands, flags and --profile values)
+if command -v aws_completer >/dev/null 2>&1; then
+  autoload -Uz bashcompinit && bashcompinit
+  complete -C aws_completer aws
+fi
+
 # Completion UI prefs
 zmodload zsh/complist
 setopt COMPLETE_IN_WORD AUTO_MENU

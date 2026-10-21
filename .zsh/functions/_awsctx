@@ -1,5 +1,15 @@
 #compdef awsctx
 
-local profiles
-profiles=(${(f)"$(aws configure list-profiles 2>/dev/null)"})
-_describe 'aws profile' profiles
+autoload -Uz _awsctx_profiles
+
+local -a rows profiles fields
+local row
+rows=("${(@f)$(_awsctx_profiles)}")
+for row in ${rows:#}; do
+  fields=("${(@ps:\t:)row}")
+  profiles+=("${fields[1]//:/\\:}:${fields[2]:--}  ${fields[3]:--}  ${fields[4]:--}")
+done
+
+_arguments \
+  '(-l --list)'{-l,--list}'[list AWS profiles with account, role and region]' \
+  '1:aws profile:{_describe "aws profile" profiles}'
